@@ -379,7 +379,8 @@ const DIAL = [
       { q:'OFICIAL', globo:true },
       { q:'FHD', url:FROST + 'NzIwMjUubTN1OA.m3u8' },
       { q:'HD', url:FROST + 'MTMxMTYzLm0zdTg.m3u8' },
-      { q:'SD', url:FROST + 'MTMxMTgyLm0zdTg.m3u8' }
+      { q:'SD', url:FROST + 'MTMxMTgyLm0zdTg.m3u8' },
+      { q:'RD', rd:'https://localhost.tattoo/globo/player.php?id=6120663&lat=-22.9068467&long=-43.1728965' }
     ] },
   { id:'redetv', name:'RedeTV', num:'6.1', logo:'logos/redetv.png', epg:'523301',
     links:[
@@ -574,9 +575,14 @@ function hideYt() {
     els.ytOverlay.style.display = 'none';
     els.ytFrame.removeAttribute('src');
     delete els.ytFrame.dataset.v;
+    delete els.ytFrame.dataset.r;
   }
 }
 function ytSrc(v) { return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(v) + '?autoplay=1&rel=0&enablejsapi=1'; }
+function showRd(url) {
+  if (els.ytFrame.dataset.r !== url) { els.ytFrame.dataset.r = url; els.ytFrame.src = bust(url); }
+  if (els.ytOverlay.style.display !== 'block') els.ytOverlay.style.display = 'block';
+}
 function setLiveDelay(v) {
   try {
     if (!v || !v.buffered || !v.buffered.length || v.currentTime === 0) return;
@@ -653,6 +659,7 @@ async function resolveDM(vid) {
 
 function resolveLink(l) {
   if (l.yt) return Promise.resolve({ kind: 'yt', src: 'yt:' + l.yt });
+  if (l.rd) return Promise.resolve({ kind: 'rd', src: l.rd });
   if (l.dm) return resolveDM(l.dm).then((u) => ({ kind: 'hls', src: u }));
   if (l.globo) return resolveGlobo().then((o) => ({ kind: 'hls', src: o.src, globoExp: o.exp }));
   if (!l.url) return Promise.reject(new Error('link sem URL'));
@@ -680,6 +687,14 @@ function loadSlot(slot, link, obj) {
   if (slot.kind === 'yt') {
     if (slot === cur()) {
       showYt(String(slot.src).slice(3));
+      state.lastLoad = Date.now();
+    }
+    return;
+  }
+  if (slot.kind === 'rd') {
+    slot.ready = true;
+    if (slot === cur()) {
+      showRd(slot.src);
       state.lastLoad = Date.now();
     }
     return;
@@ -729,6 +744,16 @@ function loadSlot(slot, link, obj) {
       state.errs.push(Date.now());
       if (state.errs.length > 20) state.errs = state.errs.slice(-20);
       if (data && data.fatal) { slot.fatal = true; state.lastData = 0; }
+      if (slot.globo && data && data.fatal &&
+          (data.details === 'manifestLoadError' || data.details === 'networkError' || data.details === 'internalException')) {
+        log('Globo: manifest bloqueado (CORS/404) — avançando para o backup…', 'warn');
+        if (!state.working) {
+          try { markTried(slot.link); } catch (e2) {}
+          setTimeout(() => {
+            if (state.ch && cur().src === slot.src && !state.working && cur().globo) failoverNow();
+          }, 2500);
+        }
+      }
     });
     h.loadSource(slot.src);
     h.attachMedia(slot.el);
@@ -783,6 +808,7 @@ function swapActivate() {
 function syncYt() {
   const c = cur();
   if (c.kind === 'yt') showYt(String(c.src).slice(3));
+  else if (c.kind === 'rd') showRd(c.src);
   else hideYt();
 }
 
@@ -924,7 +950,7 @@ async function renovarGlobo() {
 
 function detectScore() {
   const c = cur();
-  if (c.kind === 'yt') return 100;
+  if (c.kind === 'yt' || c.kind === 'rd') return 100;
   if (c.kind !== 'hls') return 100;
   if (!c.hls && !c.native) return 0;
   if (c.globo) {
@@ -1018,10 +1044,10 @@ function forceReserveActive() {
 function tickHealth() {
   if (!state.ch) return;
   const c = cur();
-  if (c.kind === 'yt') {
-    renderHealth(90, c.q);
+  if (c.kind === 'yt' || c.kind === 'rd') {
+    renderHealth(c.kind === 'yt' ? 90 : 100, c.q);
     if (state.ch.noFail) return;
-    if (!state.working && !state.ytPlayingAt && Date.now() - state.lastLoad > 15000) {
+    if (c.kind === 'yt' && !state.working && !state.ytPlayingAt && Date.now() - state.lastLoad > 15000) {
       toast('YouTube sem sinal — trocando link…');
       markTried(c.link);
       failoverNow();

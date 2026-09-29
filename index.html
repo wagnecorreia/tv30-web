@@ -481,7 +481,15 @@ function loadSettings() {
     const b = Object.assign({}, d.band, s.band || {});
     const byId = {};
     (s.channels || []).forEach((c) => { if (c && c.id) byId[c.id] = { noFail: !!c.noFail, links: (c.links || []).map(normLink).filter(Boolean) }; });
-    const channels = d.channels.map((c) => byId[c.id] ? { id: c.id, noFail: byId[c.id].noFail, links: byId[c.id].links } : c);
+    const keyL = (l) => (l.globo ? 'globo' : l.yt ? 'yt:' + l.yt : l.dm ? 'dm:' + l.dm : l.url || '');
+    const channels = d.channels.map((c) => {
+      const s0 = byId[c.id];
+      if (!s0) return c;
+      const have = {};
+      s0.links.forEach((l) => { have[keyL(l)] = true; });
+      const add = d.links.filter((l) => !have[keyL(l)]);
+      return { id: c.id, noFail: s0.noFail, links: s0.links.concat(add) };
+    });
     return { channels, globo: g, sbt: sb, band: b, failSustain: (typeof s.failSustain === 'number' && s.failSustain > 0) ? s.failSustain : 2000, tvMode: (s.tvMode === 'on' || s.tvMode === 'off') ? s.tvMode : 'auto', last: (typeof s.last === 'number') ? s.last : 0 };
   } catch (e) { return defaults(); }
 }

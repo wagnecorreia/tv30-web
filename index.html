@@ -398,7 +398,7 @@ const DIAL = [
   { id:'redetv', name:'RedeTV', num:'6.1', logo:'logos/redetv.png', epg:'523301',
     links:[
       { q:'WEB', url:'https://cdn.live.br1.jmvstream.com/webtv/AVJ-15235/playlist/playlist.m3u8' },
-      { q:'DM', dm:'kYe5OYErhldJ75Azib2' },
+      { q:'DM', dm:'kYe5OYErhldJ75Azib2', ge:true },
       { q:'4K', url:FROST + 'MTc4NTMyLm0zdTg.m3u8' },
       { q:'FHD', url:FROST + 'NzIyOTcubTN1OA.m3u8' },
       { q:'HD', url:FROST + 'NzIyOTkubTN1OA.m3u8' },
@@ -591,12 +591,19 @@ function hideYt() {
     els.ytFrame.removeAttribute('src');
     delete els.ytFrame.dataset.v;
     delete els.ytFrame.dataset.r;
+    delete els.ytFrame.dataset.d;
   }
 }
 function ytSrc(v) { return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(v) + '?autoplay=1&rel=0&enablejsapi=1'; }
+function dmSrc(id) { return 'https://geo.dailymotion.com/player/xgrus.html?video=' + encodeURIComponent(id) + '&autoplay=1&mute=1'; }
 function showRd(url) {
   if (els.ytFrame.dataset.r !== url) { els.ytFrame.dataset.r = url; els.ytFrame.src = bust(url); }
   if (els.ytOverlay.style.display !== 'block') els.ytOverlay.style.display = 'block';
+}
+function showDm(url) {
+  if (els.ytFrame.dataset.d !== url) { els.ytFrame.dataset.d = url; els.ytFrame.src = url; }
+  if (els.ytOverlay.style.display !== 'block') els.ytOverlay.style.display = 'block';
+  showPoster(false);
 }
 function setLiveDelay(v) {
   try {
@@ -677,6 +684,7 @@ async function resolveDM(vid) {
 function resolveLink(l) {
   if (l.yt) return Promise.resolve({ kind: 'yt', src: 'yt:' + l.yt });
   if (l.rd) return Promise.resolve({ kind: 'rd', src: l.rd });
+  if (l.dm && l.ge) return Promise.resolve({ kind: 'dme', src: dmSrc(l.dm) });
   if (l.dm) return resolveDM(l.dm).then((u) => ({ kind: 'hls', src: u }));
   if (l.globo) return resolveGlobo().then((o) => ({ kind: 'hls', src: o.src, globoExp: o.exp, globoAlts: o.globoAlts }));
   if (!l.url) return Promise.reject(new Error('link sem URL'));
@@ -770,6 +778,14 @@ function loadSlot(slot, link, obj) {
     }
     return;
   }
+  if (slot.kind === 'dme') {
+    slot.ready = true;
+    if (slot === cur()) {
+      showDm(slot.src);
+      state.lastLoad = Date.now();
+    }
+    return;
+  }
   if (slot === cur()) {
     state.lastData = 0;
     state.lastPaint = 0;
@@ -846,6 +862,7 @@ function syncYt() {
   const c = cur();
   if (c.kind === 'yt') showYt(String(c.src).slice(3));
   else if (c.kind === 'rd') showRd(c.src);
+  else if (c.kind === 'dme') showDm(c.src);
   else hideYt();
 }
 
@@ -877,6 +894,16 @@ function promote(reason) {
     playEl(cur().el);
     toast(reason || 'Resgate no YouTube');
     log('promoção → YouTube', 'swap');
+    return true;
+  }
+  if (r.kind === 'dme') {
+    const old = cur();
+    if (old.kind === 'dme' && old.src === r.src) return false;
+    teardownSlot(old);
+    if (old.src) state.tried[old.src] = Date.now();
+    swapActivate();
+    toast(reason || 'Resgate no Dailymotion');
+    log('promoção → Dailymotion', 'swap');
     return true;
   }
   if (!(r.ready || r.el.readyState >= 2)) return false;
@@ -939,7 +966,7 @@ function warmBest() {
   if (rr.kind !== 'none' && rr.link && linkKey(rr.link) === linkKey(link)) return;
   resolveLink(link).then((o) => {
     if (state.ch !== c) return;
-    if (o.kind === 'yt') return;
+    if (o.kind === 'yt' || o.kind === 'rd' || o.kind === 'dme') return;
     if (cur().src === o.src || (res().kind !== 'none' && res().src === o.src)) return;
     loadSlot(res(), link, o);
     log('reserva aquecida → ' + (link.q || 'link'), 'info');
@@ -987,7 +1014,7 @@ async function renovarGlobo() {
 
 function detectScore() {
   const c = cur();
-  if (c.kind === 'yt' || c.kind === 'rd') return 100;
+  if (c.kind === 'yt' || c.kind === 'rd' || c.kind === 'dme') return 100;
   if (c.kind !== 'hls') return 100;
   if (!c.hls && !c.native) return 0;
   if (c.globo) {
@@ -1081,6 +1108,12 @@ function forceReserveActive() {
 function tickHealth() {
   if (!state.ch) return;
   const c = cur();
+  if (c.kind === 'dme') {
+    renderHealth(100, c.q);
+    if (state.ch.noFail) return;
+    if (state.working && Date.now() - state.failStart > MAX_FAIL_WAIT) forceReserveActive();
+    return;
+  }
   if (c.kind === 'yt' || c.kind === 'rd') {
     renderHealth(c.kind === 'yt' ? 90 : 100, c.q);
     if (state.ch.noFail) return;
@@ -1529,7 +1562,7 @@ function buildSettings() {
   editModel = settings.channels.map((c) => ({
     id: c.id,
     noFail: !!c.noFail,
-    links: c.links.map((l) => ({ q: l.q || '', type: typeOfLink(l), val: l.yt || l.dm || l.url || '' }))
+    links: c.links.map((l) => ({ q: l.q || '', type: typeOfLink(l), val: l.yt || l.dm || l.url || '', ge: !!l.ge }))
   }));
   $('globoEnabled').checked = !!settings.globo.enabled;
   $('globoToken').value = settings.globo.token || '';
@@ -1581,7 +1614,7 @@ function saveSettings() {
     links: cm.links.map((r) => {
       if (r.type === 'hls') return { q: r.q, url: r.val };
       if (r.type === 'yt') return { q: r.q, yt: r.val };
-      if (r.type === 'dm') return { q: r.q, dm: r.val };
+      if (r.type === 'dm') return { q: r.q, dm: r.val, ge: r.ge ? true : undefined };
       return { q: r.q, globo: true };
     }).filter((l) => l.url || (l.yt && l.yt) || (l.dm && l.dm) || l.globo)
   }));

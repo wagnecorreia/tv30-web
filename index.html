@@ -641,8 +641,10 @@ async function resolveGlobo() {
       throw new Error('Sem source primary na API Globo: ' + lastErr);
     }
     if (g.useProxy) src.url = proxyUrl(src.url);
+    let alts = (j.sources || []).filter((s) => s.type !== 'primary' && s.url).map((s) => s.url);
+    if (g.useProxy) alts = alts.map((u) => proxyUrl(u));
     const info = jwtInfo(src.url);
-    return { src: src.url, exp: info ? info.exp : 0 };
+    return { src: src.url, exp: info ? info.exp : 0, globoAlts: alts };
   }
   throw new Error('Sem source primary na API Globo: ' + lastErr);
 }
@@ -661,7 +663,7 @@ function resolveLink(l) {
   if (l.yt) return Promise.resolve({ kind: 'yt', src: 'yt:' + l.yt });
   if (l.rd) return Promise.resolve({ kind: 'rd', src: l.rd });
   if (l.dm) return resolveDM(l.dm).then((u) => ({ kind: 'hls', src: u }));
-  if (l.globo) return resolveGlobo().then((o) => ({ kind: 'hls', src: o.src, globoExp: o.exp }));
+  if (l.globo) return resolveGlobo().then((o) => ({ kind: 'hls', src: o.src, globoExp: o.exp, globoAlts: o.globoAlts }));
   if (!l.url) return Promise.reject(new Error('link sem URL'));
   let u = l.url;
   if (/^http:/.test(u)) u = proxyUrl(u);
@@ -672,7 +674,60 @@ function resolveLink(l) {
 function teardownSlot(slot) {
   if (slot.hls) { try { slot.hls.destroy(); } catch (e) {} slot.hls = null; }
   try { slot.el.pause(); slot.el.removeAttribute('src'); slot.el.load(); } catch (e) {}
-  slot.kind = 'none'; slot.src = ''; slot.q = ''; slot.globo = false; slot.ready = false; slot.fatal = false; slot.link = null; slot.native = false;
+  slot.kind = 'none'; slot.src = ''; slot.q = ''; slot.globo = false; slot.ready = false; slot.fatal = false; slot.link = null; slot.native = false; slot.globoAlts = [];
+}
+
+function makeHls(slot, src) {
+  slot.src = src;
+  slot.ready = false;
+  slot.fatal = false;
+  try {
+    const h = new Hls(HLS_CFG);
+    slot.hls = h;
+    h.on(Hls.Events.MANIFEST_PARSED, () => {
+      slot.ready = true;
+      if (slot === cur()) { showPoster(false); playEl(slot.el); }
+    });
+    h.on(Hls.Events.FRAG_LOADED, (e, data) => {
+      if (slot !== cur()) return;
+      state.lastData = Date.now();
+      const s = data.stats;
+      if (s && s.loading && s.loading.ms > 0) {
+        const kbps = Math.round((s.loaded * 8) / s.loading.ms);
+        state.speed = state.speed ? Math.round(state.speed * 0.7 + kbps * 0.3) : kbps;
+      }
+    });
+    h.on(Hls.Events.LEVEL_LOADED, () => { if (slot === cur()) state.lastData = Date.now(); });
+    h.on(Hls.Events.ERROR, (e, data) => {
+      if (slot !== cur()) return;
+      state.errs.push(Date.now());
+      if (state.errs.length > 20) state.errs = state.errs.slice(-20);
+      if (data && data.fatal) { slot.fatal = true; state.lastData = 0; }
+      const fatalManifest = data && data.fatal &&
+        (data.details === 'manifestLoadError' || data.details === 'networkError' || data.details === 'internalException');
+      if (fatalManifest && slot.globo) {
+        const next = slot.globoAlts && slot.globoAlts.length ? slot.globoAlts.shift() : null;
+        if (next) {
+          log('Globo: edge bloqueou CORS — tentando outro distribuidor…', 'warn');
+          try { slot.hls.destroy(); } catch (e3) {}
+          slot.hls = null;
+          slot.globoAlts = slot.globoAlts || [];
+          makeHls(slot, next);
+          return;
+        }
+        log('Globo: manifest bloqueado (CORS/404) — avançando para o backup…', 'warn');
+        if (!state.working) {
+          try { markTried(slot.link); } catch (e2) {}
+          setTimeout(() => {
+            if (state.ch && cur().src === slot.src && !state.working && cur().globo) failoverNow();
+          }, 2500);
+        }
+      }
+    });
+    h.loadSource(slot.src);
+    h.attachMedia(slot.el);
+    playEl(slot.el);
+  } catch (e) { slot.fatal = true; }
 }
 
 function loadSlot(slot, link, obj) {
@@ -681,6 +736,7 @@ function loadSlot(slot, link, obj) {
   slot.src = obj.src;
   slot.q = link.q || '';
   slot.globo = !!link.globo;
+  slot.globoAlts = (obj.globoAlts || []).slice();
   slot.link = link;
   slot.ready = slot.kind === 'yt';
   slot.fatal = false;
@@ -723,41 +779,7 @@ function loadSlot(slot, link, obj) {
     return;
   }
   try {
-    const h = new Hls(HLS_CFG);
-    slot.hls = h;
-    h.on(Hls.Events.MANIFEST_PARSED, () => {
-      slot.ready = true;
-      if (slot === cur()) { showPoster(false); playEl(slot.el); }
-    });
-    h.on(Hls.Events.FRAG_LOADED, (e, data) => {
-      if (slot !== cur()) return;
-      state.lastData = Date.now();
-      const s = data.stats;
-      if (s && s.loading && s.loading.ms > 0) {
-        const kbps = Math.round((s.loaded * 8) / s.loading.ms);
-        state.speed = state.speed ? Math.round(state.speed * 0.7 + kbps * 0.3) : kbps;
-      }
-    });
-    h.on(Hls.Events.LEVEL_LOADED, () => { if (slot === cur()) state.lastData = Date.now(); });
-    h.on(Hls.Events.ERROR, (e, data) => {
-      if (slot !== cur()) return;
-      state.errs.push(Date.now());
-      if (state.errs.length > 20) state.errs = state.errs.slice(-20);
-      if (data && data.fatal) { slot.fatal = true; state.lastData = 0; }
-      if (slot.globo && data && data.fatal &&
-          (data.details === 'manifestLoadError' || data.details === 'networkError' || data.details === 'internalException')) {
-        log('Globo: manifest bloqueado (CORS/404) — avançando para o backup…', 'warn');
-        if (!state.working) {
-          try { markTried(slot.link); } catch (e2) {}
-          setTimeout(() => {
-            if (state.ch && cur().src === slot.src && !state.working && cur().globo) failoverNow();
-          }, 2500);
-        }
-      }
-    });
-    h.loadSource(slot.src);
-    h.attachMedia(slot.el);
-    playEl(slot.el);
+    makeHls(slot, slot.src);
   } catch (e) { slot.fatal = true; }
 }
 

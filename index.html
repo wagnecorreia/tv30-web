@@ -1733,7 +1733,7 @@ if (tvQ === '1') { try { localStorage.setItem('tv30_tv', '1'); } catch (e) {} }
 if (tvQ === '0') { try { localStorage.removeItem('tv30_tv'); } catch (e) {} }
 function isTVDevice() {
   const ua = String(navigator.userAgent).toLowerCase();
-  if (/(aft[a-z]*|android tv|smart ?tv|television|tizen|webos|roku|bravia|fire ?tv|tv ?box|mibox|mi box|mxq|x96|h96|beelink)/.test(ua)) return true;
+  if (/(tv30app|aft[a-z]*|android tv|smart ?tv|television|tizen|webos|roku|bravia|fire ?tv|tv ?box|mibox|mi box|mxq|x96|h96|beelink)/.test(ua)) return true;
   try { return localStorage.getItem('tv30_tv') === '1'; } catch (e) { return false; }
 }
 const tv = { epgT: null, hintT: null, focus: 0 };

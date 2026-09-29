@@ -425,8 +425,8 @@ const DIAL = [
     ] },
   { id:'cnt-rio', name:'CNT', num:'9.1', logo:'logos/cnt.png', epg:'',
     links:[
-      { q:'DM', dm:'x9zentk' },
       { q:'L1', url:'http://45.162.64.114/CNT/index.m3u8' },
+      { q:'DM', dm:'x9zentk', ge:true },
       { q:'L2', url:'http://168.197.104.22/CNT/index.m3u8' },
       { q:'L3', url:'http://170.83.49.66:8083/REDECNTHD/index.m3u8' },
       { q:'L4', url:'http://186.219.52.187/cnt/index.m3u8' }
@@ -479,8 +479,10 @@ function normLink(l) {
   if (l.globo) r.globo = true;
   if (l.yt) r.yt = String(l.yt);
   if (l.dm) r.dm = String(l.dm);
+  if (l.dm && l.ge) r.ge = true;
+  if (l.rd) r.rd = String(l.rd);
   if (l.url) r.url = String(l.url);
-  return (r.globo || r.yt || r.dm || r.url) ? { q: r.q || '', globo: r.globo, yt: r.yt, dm: r.dm, url: r.url } : null;
+  return (r.globo || r.yt || r.dm || r.url) ? { q: r.q || '', globo: r.globo, yt: r.yt, dm: r.dm, ge: r.ge, rd: r.rd, url: r.url } : null;
 }
 function loadSettings() {
   try {
@@ -493,13 +495,28 @@ function loadSettings() {
     const byId = {};
     (s.channels || []).forEach((c) => { if (c && c.id) byId[c.id] = { noFail: !!c.noFail, links: (c.links || []).map(normLink).filter(Boolean) }; });
     const keyL = (l) => (l.globo ? 'globo' : l.yt ? 'yt:' + l.yt : l.dm ? 'dm:' + l.dm : l.url || '');
+    const flgL = (l) => (l.ge ? 'g' : '') + (l.rd ? 'r' : '');
     const channels = d.channels.map((c) => {
       const s0 = byId[c.id];
       if (!s0) return c;
-      const have = {};
-      s0.links.forEach((l) => { have[keyL(l)] = true; });
-      const add = d.links.filter((l) => !have[keyL(l)]);
-      return { id: c.id, noFail: s0.noFail, links: s0.links.concat(add) };
+      const dMap = {};
+      d.links.forEach((l) => { dMap[keyL(l)] = l; });
+      const saved = {};
+      s0.links.forEach((l) => { saved[keyL(l)] = l; });
+      const upgrades = (l) => {
+        const dfl = dMap[keyL(l)];
+        if (!dfl) return l;
+        if (flgL(dfl) === flgL(l)) return l;
+        return Object.assign({}, dfl, { q: l.q || dfl.q });
+      };
+      const sameSet = s0.links.every((l) => dMap[keyL(l)]) && d.links.every((l) => saved[keyL(l)]);
+      let links;
+      if (sameSet) {
+        links = d.links.map((dfl) => Object.assign({}, dfl, { q: (saved[keyL(dfl)] || {}).q || dfl.q }));
+      } else {
+        links = s0.links.map(upgrades).concat(d.links.filter((l) => !saved[keyL(l)]));
+      }
+      return { id: c.id, noFail: s0.noFail, links };
     });
     return { channels, globo: g, sbt: sb, band: b, failSustain: (typeof s.failSustain === 'number' && s.failSustain > 0) ? s.failSustain : 2000, tvMode: (s.tvMode === 'on' || s.tvMode === 'off') ? s.tvMode : 'auto', last: (typeof s.last === 'number') ? s.last : 0 };
   } catch (e) { return defaults(); }

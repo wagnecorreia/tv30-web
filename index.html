@@ -87,6 +87,8 @@ body, html { width:100%; height:100%; background-color:#000; color:#fff; font-fa
 .field { margin-bottom:12px; }
 .field label { display:block; font-size:12px; font-weight:600; color:#cdd; margin-bottom:5px; }
 .field input[type=text], .field input[type=url], .field input[type=number], .field textarea { width:100%; padding:9px 11px; border-radius:9px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06); color:#fff; font-size:13px; font-family:'Segoe UI',Roboto,Arial,sans-serif; user-select:text; outline:none; }
+.field select { width:100%; padding:9px 11px; border-radius:9px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06); color:#fff; font-size:13px; cursor:pointer; outline:none; }
+.field select option { color:#111; }
 .field input:focus, .field textarea:focus { border-color:rgba(34,211,238,.6); }
 .field input:disabled { opacity:.45; }
 .check { display:flex; align-items:center; gap:10px; margin-bottom:12px; cursor:pointer; }
@@ -303,6 +305,17 @@ body, html { width:100%; height:100%; background-color:#000; color:#fff; font-fa
           <p class="settings-hint">Ao salvar, este campo regrava o link "DIRETO" do canal Band.</p>
         </section>
         <section class="settings-section">
+          <h3>Modo TV (controle remoto)</h3>
+          <div class="field"><label>Detecção de TV (setas ▲▼ trocam canal, Enter abre a lista e o overlay de instruções)</label>
+            <select id="tvMode">
+              <option value="auto">Automático (padrão)</option>
+              <option value="on">Sempre ativo</option>
+              <option value="off">Desativado</option>
+            </select>
+          </div>
+          <p class="settings-hint">Se o app abrir na TV reconhecendo como tablet/celular, escolha "Sempre ativo". Se o aparelho for detectado como TV e você preferir o uso por toque, escolha "Desativado".</p>
+        </section>
+        <section class="settings-section">
           <h3>Failover</h3>
           <div class="field"><label>Tolerar sinal fraco por (segundos) antes de trocar de link</label><input type="number" id="failSustainSec" min="0" max="120"></div>
           <p class="settings-hint">Controle individual por canal: abra um canal em "Canais &amp; links do dial" e marque "Travar no primeiro link". Com a trava ativa, a saúde do sinal cai mas o app continua no link escolhido sem trocar.</p>
@@ -443,6 +456,7 @@ function defaults() {
     sbt: Object.assign({}, SBT_DEF),
     band: Object.assign({}, BAND_DEF),
     failSustain: 2000,
+    tvMode: 'auto',
     last: 0
   };
 }
@@ -467,7 +481,7 @@ function loadSettings() {
     const byId = {};
     (s.channels || []).forEach((c) => { if (c && c.id) byId[c.id] = { noFail: !!c.noFail, links: (c.links || []).map(normLink).filter(Boolean) }; });
     const channels = d.channels.map((c) => byId[c.id] ? { id: c.id, noFail: byId[c.id].noFail, links: byId[c.id].links } : c);
-    return { channels, globo: g, sbt: sb, band: b, failSustain: (typeof s.failSustain === 'number' && s.failSustain > 0) ? s.failSustain : 2000, last: (typeof s.last === 'number') ? s.last : 0 };
+    return { channels, globo: g, sbt: sb, band: b, failSustain: (typeof s.failSustain === 'number' && s.failSustain > 0) ? s.failSustain : 2000, tvMode: (s.tvMode === 'on' || s.tvMode === 'off') ? s.tvMode : 'auto', last: (typeof s.last === 'number') ? s.last : 0 };
   } catch (e) { return defaults(); }
 }
 function persistSettings() {
@@ -1524,6 +1538,7 @@ function buildSettings() {
   $('globoLead').value = settings.globo.lead || 5;
   $('globoProxy').checked = !!settings.globo.useProxy;
   $('failSustainSec').value = Math.round((settings.failSustain || 2000) / 1000);
+  $('tvMode').value = settings.tvMode || 'auto';
   $('sbtYt').value = settings.sbt.yt || '';
   $('sbtCdn').value = settings.sbt.cdn || '';
   $('sbtSat').value = settings.sbt.sat || '';
@@ -1555,6 +1570,10 @@ function saveSettings() {
   settings.band.primary = val('bandPrimary');
   const fs = Math.round(+val('failSustainSec') || 0);
   settings.failSustain = Math.max(0, fs) * 1000;
+  const prevTv = settings.tvMode;
+  settings.tvMode = ['on', 'off'].includes($('tvMode').value) ? $('tvMode').value : 'auto';
+  applyTvMode();
+  if (settings.tvMode === 'on' && prevTv !== 'on') showTvHint();
   settings.channels = editModel.map((cm) => ({
     id: cm.id,
     noFail: !!cm.noFail,
@@ -1633,8 +1652,13 @@ function isTVDevice() {
   try { return localStorage.getItem('tv30_tv') === '1'; } catch (e) { return false; }
 }
 const tv = { epgT: null, hintT: null, focus: 0 };
-const TV_MODE = isTVDevice();
-if (TV_MODE) els.app.classList.add('app-tv');
+const AUTO_TV = isTVDevice();
+let tvMode = settings.tvMode === 'on' ? true : settings.tvMode === 'off' ? false : AUTO_TV;
+function applyTvMode() {
+  tvMode = settings.tvMode === 'on' ? true : settings.tvMode === 'off' ? false : AUTO_TV;
+  els.app.classList.toggle('app-tv', tvMode);
+}
+applyTvMode();
 
 function showTvHint() {
   clearTimeout(tv.hintT);
@@ -1659,7 +1683,7 @@ function tvFocusItem(i, scroll) {
 }
 
 document.addEventListener('keydown', (e) => {
-  if (TV_MODE) {
+  if (tvMode) {
     if (els.settingsOverlay.classList.contains('open')) { if (e.key === 'Escape') closeSettings(); return; }
     if (e.target && /input|select|textarea/i.test(e.target.tagName)) return;
     const listOpen = els.sidePanel.classList.contains('open');

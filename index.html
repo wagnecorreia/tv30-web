@@ -408,8 +408,8 @@ const DIAL = [
     ] },
   { id:'redetv', name:'RedeTV', num:'6.1', logo:'logos/redetv.png', epg:'523301',
     links:[
-      { q:'WEB', url:'https://cdn.live.br1.jmvstream.com/webtv/AVJ-15235/playlist/playlist.m3u8' },
       { q:'DM', dm:'kYe5OYErhldJ75Azib2', ge:true },
+      { q:'WEB', url:'https://cdn.live.br1.jmvstream.com/webtv/AVJ-15235/playlist/playlist.m3u8' },
       { q:'4K', url:FROST + 'MTc4NTMyLm0zdTg.m3u8' },
       { q:'FHD', url:FROST + 'NzIyOTcubTN1OA.m3u8' },
       { q:'HD', url:FROST + 'NzIyOTkubTN1OA.m3u8' },
@@ -425,8 +425,8 @@ const DIAL = [
     ] },
   { id:'cnt-rio', name:'CNT', num:'9.1', logo:'logos/cnt.png', epg:'',
     links:[
-      { q:'L1', url:'http://45.162.64.114/CNT/index.m3u8' },
       { q:'DM', dm:'x9zentk', ge:true },
+      { q:'L1', url:'http://45.162.64.114/CNT/index.m3u8' },
       { q:'L2', url:'http://168.197.104.22/CNT/index.m3u8' },
       { q:'L3', url:'http://170.83.49.66:8083/REDECNTHD/index.m3u8' },
       { q:'L4', url:'http://186.219.52.187/cnt/index.m3u8' }
@@ -509,7 +509,7 @@ function loadSettings() {
         if (flgL(dfl) === flgL(l)) return l;
         return Object.assign({}, dfl, { q: l.q || dfl.q });
       };
-      const sameSet = s0.links.every((l) => dMap[keyL(l)]) && d.links.every((l) => saved[keyL(l)]);
+      const sameSet = s0.links.every((l) => dMap[keyL(l)]);
       let links;
       if (sameSet) {
         links = d.links.map((dfl) => Object.assign({}, dfl, { q: (saved[keyL(dfl)] || {}).q || dfl.q }));

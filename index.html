@@ -316,6 +316,17 @@ body, html { width:100%; height:100%; background-color:#000; color:#fff; font-fa
           <p class="settings-hint">Se o app abrir na TV reconhecendo como tablet/celular, escolha "Sempre ativo". Se o aparelho for detectado como TV e você preferir o uso por toque, escolha "Desativado".</p>
         </section>
         <section class="settings-section">
+          <h3>Origem do app</h3>
+          <div class="field"><label>De onde o aplicativo carrega esta página</label>
+            <select id="appOrigin">
+              <option value="mirror">Mirror · GitHub Pages</option>
+              <option value="netlify">Netlify</option>
+            </select>
+          </div>
+          <div class="backup-tools"><button id="appOriginApply">Aplicar e recarregar</button></div>
+          <p class="settings-hint">No aplicativo Android isso troca a URL carregada pelo WebView. As configurações são salvas por origem: ao trocar, o app abre limpo na nova origem.</p>
+        </section>
+        <section class="settings-section">
           <h3>Failover</h3>
           <div class="field"><label>Tolerar sinal fraco por (segundos) antes de trocar de link</label><input type="number" id="failSustainSec" min="0" max="120"></div>
           <p class="settings-hint">Controle individual por canal: abra um canal em "Canais &amp; links do dial" e marque "Travar no primeiro link". Com a trava ativa, a saúde do sinal cai mas o app continua no link escolhido sem trocar.</p>
@@ -1581,6 +1592,7 @@ function buildSettings() {
   $('globoProxy').checked = !!settings.globo.useProxy;
   $('failSustainSec').value = Math.round((settings.failSustain || 2000) / 1000);
   $('tvMode').value = settings.tvMode || 'auto';
+  $('appOrigin').value = (location.hostname || '').endsWith('.netlify.app') ? 'netlify' : 'mirror';
   $('sbtYt').value = settings.sbt.yt || '';
   $('sbtCdn').value = settings.sbt.cdn || '';
   $('sbtSat').value = settings.sbt.sat || '';
@@ -1684,6 +1696,20 @@ $('diagClear').onclick = () => { els.diag.innerHTML = ''; };
 $('btnExport').onclick = exportBackup;
 $('btnImport').onclick = importBackup;
 $('btnRestore').onclick = restoreDefaults;
+
+const APP_ORIGINS = {
+  mirror: 'https://wagnecorreia.github.io/tv30-web/',
+  netlify: 'https://tv30.netlify.app/'
+};
+$('appOriginApply').onclick = () => {
+  const target = APP_ORIGINS[$('appOrigin').value] || APP_ORIGINS.mirror;
+  if (target === location.origin + location.pathname) { log('A origem já é a atual.', 'info'); return; }
+  if (window.Android && typeof Android.setAppUrl === 'function') {
+    try { Android.setAppUrl(target); return; } catch (e) {}
+  }
+  log('Abrindo ' + target, 'info');
+  location.href = target;
+};
 
 const tvQ = new URLSearchParams(location.search).get('tv');
 if (tvQ === '1') { try { localStorage.setItem('tv30_tv', '1'); } catch (e) {} }

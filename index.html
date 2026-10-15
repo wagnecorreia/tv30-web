@@ -20,7 +20,7 @@ body, html { width:100%; height:100%; background-color:#000; color:#fff; font-fa
 .player-logo-inner { width:80px; height:80px; border-radius:50%; box-shadow:0 10px 25px rgba(0,0,0,.4); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:2rem; color:#fff; text-transform:uppercase; }
 .player-logo-inner img { width:100%; height:100%; object-fit:contain; border-radius:50%; }
 .yt-overlay { position:absolute; inset:0; z-index:2; display:none; background:#000; }
-.yt-overlay iframe { width:100%; height:100%; border:0; background:#000; pointer-events:none; }
+.yt-overlay iframe { width:100%; height:100%; border:0; background:#000; }
 .rotate-btn, .gear-btn { position:absolute; bottom:12px; width:44px; height:44px; background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.22); border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:10; transition:transform .2s ease; }
 .rotate-btn { right:12px; }
 .gear-btn { right:64px; }
@@ -87,8 +87,6 @@ body, html { width:100%; height:100%; background-color:#000; color:#fff; font-fa
 .field { margin-bottom:12px; }
 .field label { display:block; font-size:12px; font-weight:600; color:#cdd; margin-bottom:5px; }
 .field input[type=text], .field input[type=url], .field input[type=number], .field textarea { width:100%; padding:9px 11px; border-radius:9px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06); color:#fff; font-size:13px; font-family:'Segoe UI',Roboto,Arial,sans-serif; user-select:text; outline:none; }
-.field select { width:100%; padding:9px 11px; border-radius:9px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06); color:#fff; font-size:13px; cursor:pointer; outline:none; }
-.field select option { color:#111; }
 .field input:focus, .field textarea:focus { border-color:rgba(34,211,238,.6); }
 .field input:disabled { opacity:.45; }
 .check { display:flex; align-items:center; gap:10px; margin-bottom:12px; cursor:pointer; }
@@ -121,13 +119,6 @@ body, html { width:100%; height:100%; background-color:#000; color:#fff; font-fa
 #diag .ok { color:#57d68d; } #diag .warn { color:#f4b942; } #diag .err { color:#ff6b6b; } #diag .info { color:#8ab4f8; } #diag .swap { color:#c58cff; }
 .diag-tools { display:flex; gap:8px; margin-bottom:6px; }
 .diag-tools button { padding:6px 12px; border-radius:8px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08); color:#fff; font-size:12px; cursor:pointer; }
-.app-tv .gear-btn, .app-tv .gear-bottom { display:none; }
-.app-tv .handles-layer { display:none; }
-.side-channel-item.focus { background:rgba(34,211,238,.22); box-shadow:inset 0 0 0 2px rgba(34,211,238,.65); }
-#tvHint { position:fixed; inset:0; z-index:400; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.55); pointer-events:none; opacity:0; transition:opacity 1.2s ease; }
-#tvHint.show { display:flex; opacity:1; }
-#tvHint.fading { opacity:0; }
-#tvHint svg { width:min(80vw, 860px); height:auto; filter:drop-shadow(0 14px 34px rgba(0,0,0,.65)); }
 #backupText { width:100%; height:90px; font-family:Consolas,monospace; font-size:11px; user-select:text; }
 .backup-tools { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
 .backup-tools button { padding:8px 14px; border-radius:9px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.08); color:#fff; font-size:12px; font-weight:600; cursor:pointer; }
@@ -203,77 +194,6 @@ body, html { width:100%; height:100%; background-color:#000; color:#fff; font-fa
     </footer>
   </div>
 
-  <div id="tvHint"><svg id="Camada_1" data-name="Camada 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
-      <defs>
-        <style>
-          .cls-1 {
-            opacity: .7;
-          }
-
-          .cls-2, .cls-3 {
-            stroke-width: 0px;
-          }
-
-          .cls-3 {
-            fill: #fff;
-          }
-        </style>
-      </defs>
-      <g class="cls-1">
-        <rect class="cls-2" x="1530.37" y="47.5" width="330.37" height="411" rx="10.5" ry="10.5"/>
-        <path class="cls-3" d="m1850.24,49c4.96,0,9,4.04,9,9v390c0,4.96-4.04,9-9,9h-309.37c-4.96,0-9-4.04-9-9V58c0-4.96,4.04-9,9-9h309.37m0-3h-309.37c-6.6,0-12,5.4-12,12v390c0,6.6,5.4,12,12,12h309.37c6.6,0,12-5.4,12-12V58c0-6.6-5.4-12-12-12h0Z"/>
-      </g>
-      <path class="cls-3" d="m1693.61,144.81c29,0,56.27,11.29,76.78,31.8,20.51,20.51,31.8,47.77,31.8,76.78s-11.29,56.27-31.8,76.78c-20.51,20.51-47.77,31.8-76.78,31.8s-56.27-11.29-76.78-31.8c-20.51-20.51-31.8-47.77-31.8-76.78s11.29-56.27,31.8-76.78c20.51-20.51,47.77-31.8,76.78-31.8m0-5c-62.73,0-113.58,50.85-113.58,113.58s50.85,113.58,113.58,113.58,113.58-50.85,113.58-113.58-50.85-113.58-113.58-113.58h0Z"/>
-      <path class="cls-3" d="m1693.61,205.28c26.53,0,48.11,21.58,48.11,48.11s-21.58,48.11-48.11,48.11-48.11-21.58-48.11-48.11,21.58-48.11,48.11-48.11m0-5c-29.33,0-53.11,23.78-53.11,53.11s23.78,53.11,53.11,53.11,53.11-23.78,53.11-53.11-23.78-53.11-53.11-53.11h0Z"/>
-      <polygon class="cls-3" points="1693.61 111.9 1671.52 127.37 1715.71 127.37 1693.61 111.9"/>
-      <polygon class="cls-3" points="1708.34 58.24 1702.53 69.26 1714.16 69.26 1708.34 58.24"/>
-      <polygon class="cls-3" points="1693.61 401.82 1715.71 386.35 1671.52 386.35 1693.61 401.82"/>
-      <polygon class="cls-3" points="1838.57 253.39 1823.1 231.29 1823.1 275.48 1838.57 253.39"/>
-      <polygon class="cls-3" points="1548.65 253.39 1564.12 275.48 1564.12 231.29 1548.65 253.39"/>
-      <path class="cls-3" d="m1678.11,113.29c-.25,0-.49-.09-.68-.27l-37.21-34.89c-.3-.28-.4-.72-.25-1.1.15-.38.52-.63.93-.63h141.49c.55,0,1,.45,1,1s-.45,1-1,1h-138.96l35.37,33.16c.4.38.42,1.01.05,1.41-.2.21-.46.32-.73.32Z"/>
-      <path class="cls-3" d="m1656.76,68.38c-.28.12-.54.24-.77.35-.23.11-.53.22-.9.34-.31.1-.66.18-1.02.25-.37.07-.77.1-1.22.1-.83,0-1.59-.12-2.28-.35-.68-.23-1.28-.6-1.78-1.1-.49-.49-.88-1.11-1.16-1.87-.28-.75-.42-1.63-.42-2.63,0-.95.13-1.79.4-2.54s.65-1.38,1.16-1.89c.49-.5,1.08-.88,1.77-1.14.69-.26,1.46-.39,2.31-.39.62,0,1.23.07,1.85.22s1.3.41,2.05.79v1.81h-.12c-.63-.53-1.26-.92-1.88-1.16-.62-.24-1.29-.36-2-.36-.58,0-1.11.09-1.57.28s-.88.48-1.25.88c-.36.39-.63.87-.83,1.46-.2.59-.3,1.27-.3,2.04s.11,1.5.33,2.09c.22.58.5,1.06.85,1.42.36.38.78.66,1.26.85.48.18.99.27,1.53.27.74,0,1.43-.13,2.07-.38s1.25-.63,1.81-1.14h.11v1.79Z"/>
-      <path class="cls-3" d="m1668,69.21h-1.63l-1.13-3.21h-4.97l-1.13,3.21h-1.55l4.19-11.5h2.04l4.19,11.5Zm-3.23-4.52l-2.02-5.65-2.02,5.65h4.04Z"/>
-      <path class="cls-3" d="m1678.52,69.21h-1.89l-5.45-10.29v10.29h-1.43v-11.5h2.37l4.97,9.39v-9.39h1.43v11.5Z"/>
-      <path class="cls-3" d="m1690.64,69.21h-1.63l-1.13-3.21h-4.97l-1.13,3.21h-1.55l4.19-11.5h2.04l4.19,11.5Zm-3.23-4.52l-2.02-5.65-2.02,5.65h4.04Z"/>
-      <path class="cls-3" d="m1699.67,69.21h-7.28v-11.5h1.53v10.14h5.75v1.36Z"/>
-      <path class="cls-3" d="m1728.54,57.19l-5.54,14.37h-1.34l5.51-14.37h1.36Z"/>
-      <path class="cls-3" d="m1745.07,68.38c-.28.12-.54.24-.77.35-.23.11-.53.22-.9.34-.31.1-.66.18-1.02.25-.37.07-.77.1-1.22.1-.83,0-1.59-.12-2.28-.35-.68-.23-1.28-.6-1.78-1.1-.49-.49-.88-1.11-1.16-1.87-.28-.75-.42-1.63-.42-2.63,0-.95.13-1.79.4-2.54s.65-1.38,1.16-1.89c.49-.5,1.08-.88,1.77-1.14.69-.26,1.46-.39,2.31-.39.62,0,1.23.07,1.85.22s1.3.41,2.05.79v1.81h-.12c-.63-.53-1.26-.92-1.88-1.16-.62-.24-1.29-.36-2-.36-.58,0-1.11.09-1.57.28s-.88.48-1.25.88c-.36.39-.63.87-.83,1.46-.2.59-.3,1.27-.3,2.04s.11,1.5.33,2.09c.22.58.5,1.06.85,1.42.36.38.78.66,1.26.85.48.18.99.27,1.53.27.74,0,1.43-.13,2.07-.38s1.25-.63,1.81-1.14h.11v1.79Z"/>
-      <path class="cls-3" d="m1751.28,69.21h-4.54v-1.17h1.51v-9.15h-1.51v-1.17h4.54v1.17h-1.51v9.15h1.51v1.17Z"/>
-      <path class="cls-3" d="m1764.13,69.21h-1.53v-9.91l-3.2,6.74h-.91l-3.17-6.74v9.91h-1.43v-11.5h2.08l3.07,6.4,2.97-6.4h2.12v11.5Z"/>
-      <path class="cls-3" d="m1776.29,69.21h-1.63l-1.13-3.21h-4.97l-1.13,3.21h-1.55l4.19-11.5h2.04l4.19,11.5Zm-3.23-4.52l-2.02-5.65-2.02,5.65h4.04Z"/>
-      <path class="cls-3" d="m1787.61,119.6h-4.54v-1.17h1.51v-9.15h-1.51v-1.17h4.54v1.17h-1.51v9.15h1.51v1.17Z"/>
-      <path class="cls-3" d="m1798.99,119.6h-1.89l-5.45-10.29v10.29h-1.43v-11.5h2.37l4.97,9.39v-9.39h1.43v11.5Z"/>
-      <path class="cls-3" d="m1809.39,109.46h-5.82v3.24h5v1.36h-5v5.54h-1.53v-11.5h7.35v1.36Z"/>
-      <path class="cls-3" d="m1819.71,109.42c.47.52.83,1.15,1.08,1.89s.37,1.59.37,2.54-.13,1.8-.38,2.54-.61,1.37-1.07,1.87c-.47.52-1.03.91-1.68,1.17-.65.26-1.38.39-2.21.39s-1.54-.13-2.21-.4c-.66-.27-1.22-.66-1.69-1.17-.46-.51-.82-1.14-1.07-1.88s-.37-1.59-.37-2.54.12-1.78.37-2.52.61-1.38,1.08-1.91c.45-.5,1.02-.89,1.69-1.16.67-.27,1.4-.4,2.2-.4s1.56.14,2.22.41c.66.27,1.21.66,1.67,1.15Zm-.14,4.43c0-1.49-.33-2.65-1-3.46-.67-.81-1.58-1.22-2.74-1.22s-2.09.41-2.75,1.22-1,1.96-1,3.46.34,2.66,1.02,3.46c.68.8,1.59,1.2,2.73,1.2s2.05-.4,2.73-1.2c.68-.8,1.02-1.96,1.02-3.46Z"/>
-      <path class="cls-3" d="m1688.96,431.48 5.82-11.02h-11.63l5.81,11.02Z"/>
-      <path class="cls-3" d="m1771.53,438.13h-164.75c-.55,0-1-.45-1-1v-17.06c0-.45.31-.85.75-.97l65.12-17.06c.53-.14,1.08.18,1.22.71.14.53-.18,1.08-.71,1.22l-64.38,16.86v15.28h163.75c.55,0,1,.45,1,1s-.45,1-1,1Z"/>
-      <path class="cls-3" d="m1640.37,430.26c-.28.12-.54.24-.77.35-.23.11-.53.22-.9.34-.31.1-.66.18-1.02.25-.37.07-.77.1-1.22.1-.83,0-1.59-.12-2.28-.35-.68-.23-1.28-.6-1.78-1.1-.49-.49-.88-1.11-1.16-1.87-.28-.75-.42-1.63-.42-2.63,0-.95.13-1.79.4-2.54s.65-1.38,1.16-1.89c.49-.5,1.08-.88,1.77-1.14.69-.26,1.46-.39,2.31-.39.62,0,1.23.07,1.85.22s1.3.41,2.05.79v1.81h-.12c-.63-.53-1.26-.92-1.88-1.16-.62-.24-1.29-.36-2-.36-.58,0-1.11.09-1.57.28s-.88.48-1.25.88c-.36.39-.63.87-.83,1.46-.2.59-.3,1.27-.3,2.04s.11,1.5.33,2.09c.22.58.5,1.06.85,1.42.36.38.78.66,1.26.85.48.18.99.27,1.53.27.74,0,1.43-.13,2.07-.38s1.25-.63,1.81-1.14h.11v1.79Z"/>
-      <path class="cls-3" d="m1651.6,431.1h-1.63l-1.13-3.21h-4.97l-1.13,3.21h-1.55l4.19-11.5h2.04l4.19,11.5Zm-3.23-4.52l-2.02-5.65-2.02,5.65h4.04Z"/>
-      <path class="cls-3" d="m1662.12,431.1h-1.89l-5.45-10.29v10.29h-1.43v-11.5h2.37l4.97,9.39v-9.39h1.43v11.5Z"/>
-      <path class="cls-3" d="m1674.25,431.1h-1.63l-1.13-3.21h-4.97l-1.13,3.21h-1.55l4.19-11.5h2.04l4.19,11.5Zm-3.23-4.52l-2.02-5.65-2.02,5.65h4.04Z"/>
-      <path class="cls-3" d="m1683.27,431.1h-7.28v-11.5h1.53v10.14h5.75v1.36Z"/>
-      <path class="cls-3" d="m1712.14,419.08l-5.54,14.37h-1.34l5.51-14.37h1.36Z"/>
-      <path class="cls-3" d="m1728.47,427.56c0,.57-.11,1.08-.32,1.51-.22.44-.51.8-.87,1.08-.43.34-.91.58-1.42.73s-1.18.22-1.97.22h-4.08v-11.5h3.41c.84,0,1.47.03,1.88.09.42.06.82.19,1.2.39.42.22.73.51.92.85s.29.76.29,1.25c0,.55-.14,1.01-.42,1.39-.28.38-.65.69-1.11.92v.06c.78.16,1.39.5,1.84,1.02.45.52.67,1.18.67,1.98Zm-2.57-5.18c0-.28-.05-.51-.14-.7s-.24-.35-.45-.46c-.24-.14-.54-.23-.88-.26-.35-.03-.77-.05-1.28-.05h-1.82v3.32h1.98c.48,0,.86-.02,1.14-.07s.55-.15.79-.31.41-.35.51-.6.15-.53.15-.87Zm.98,5.24c0-.46-.07-.83-.21-1.1-.14-.27-.39-.5-.76-.69-.25-.13-.55-.21-.9-.25-.35-.04-.78-.06-1.29-.06h-2.4v4.28h2.02c.67,0,1.22-.04,1.65-.1s.78-.2,1.05-.38c.29-.2.5-.43.63-.69.13-.26.2-.59.2-1Z"/>
-      <path class="cls-3" d="m1739.71,431.1h-1.63l-1.13-3.21h-4.97l-1.13,3.21h-1.55l4.19-11.5h2.04l4.19,11.5Zm-3.23-4.52l-2.02-5.65-2.02,5.65h4.04Z"/>
-      <path class="cls-3" d="m1745.5,431.1h-4.54v-1.17h1.51v-9.15h-1.51v-1.17h4.54v1.17h-1.51v9.15h1.51v1.17Z"/>
-      <path class="cls-3" d="m1756.88,419.6l-3.97,5.69,3.96,5.82h-1.77l-3.14-4.73-3.21,4.73h-1.67l4.01-5.75-3.92-5.75h1.76l3.1,4.67,3.17-4.67h1.68Z"/>
-      <path class="cls-3" d="m1767.44,420.92c.47.52.83,1.15,1.08,1.89s.37,1.59.37,2.54-.13,1.8-.38,2.54-.61,1.37-1.07,1.87c-.47.52-1.03.91-1.68,1.17-.65.26-1.38.39-2.21.39s-1.54-.13-2.21-.4c-.66-.27-1.22-.66-1.69-1.17-.46-.51-.82-1.14-1.07-1.88s-.37-1.59-.37-2.54.12-1.78.37-2.52.61-1.38,1.08-1.91c.45-.5,1.02-.89,1.69-1.16.67-.27,1.4-.4,2.2-.4s1.56.14,2.22.41c.66.27,1.21.66,1.67,1.15Zm-.14,4.43c0-1.49-.33-2.65-1-3.46-.67-.81-1.58-1.22-2.74-1.22s-2.09.41-2.75,1.22-1,1.96-1,3.46.34,2.66,1.02,3.46c.68.8,1.59,1.2,2.73,1.2s2.05-.4,2.73-1.2c.68-.8,1.02-1.96,1.02-3.46Z"/>
-      <path class="cls-3" d="m1686.16,236.93c.44.49.78,1.08,1.02,1.79.24.71.35,1.51.35,2.4s-.12,1.7-.36,2.41c-.24.71-.58,1.3-1.01,1.77-.45.49-.98.86-1.59,1.11-.61.25-1.31.37-2.09.37s-1.46-.13-2.09-.38c-.63-.25-1.16-.62-1.6-1.1-.44-.48-.78-1.07-1.01-1.77-.24-.7-.35-1.5-.35-2.4s.12-1.68.35-2.39c.23-.7.58-1.31,1.02-1.81.43-.48.96-.84,1.6-1.1.64-.25,1.33-.38,2.08-.38s1.48.13,2.1.38c.62.26,1.15.62,1.58,1.09Zm-.13,4.19c0-1.41-.32-2.5-.95-3.27s-1.5-1.15-2.59-1.15-1.97.38-2.6,1.15-.95,1.86-.95,3.27.32,2.52.96,3.28,1.5,1.14,2.59,1.14,1.94-.38,2.58-1.14.96-1.85.96-3.28Z"/>
-      <path class="cls-3" d="m1698.58,246.55h-1.88l-4.3-4.84-1.08,1.15v3.69h-1.45v-10.88h1.45v5.68l5.28-5.68h1.75l-4.86,5.11,5.08,5.76Z"/>
-      <path class="cls-3" d="m1710.28,235.19l-5.24,13.59h-1.26l5.22-13.59h1.29Z"/>
-      <path class="cls-3" d="m1657.58,263.72c-.27.12-.51.23-.73.33-.22.1-.5.21-.85.32-.3.09-.62.17-.97.24-.35.07-.73.1-1.15.1-.79,0-1.51-.11-2.15-.33s-1.21-.57-1.68-1.04c-.47-.46-.83-1.05-1.1-1.76-.26-.71-.39-1.54-.39-2.49,0-.9.13-1.7.38-2.4.25-.71.62-1.3,1.1-1.79.46-.47,1.02-.83,1.68-1.08.66-.25,1.38-.37,2.18-.37.58,0,1.17.07,1.75.21s1.23.39,1.94.75v1.72h-.11c-.6-.5-1.19-.87-1.78-1.1-.59-.23-1.22-.34-1.89-.34-.55,0-1.05.09-1.49.27-.44.18-.83.45-1.18.83-.34.37-.6.83-.79,1.38-.19.56-.28,1.2-.28,1.93s.1,1.42.31,1.97.47,1,.8,1.34c.34.36.74.63,1.19.8.46.17.94.26,1.44.26.7,0,1.35-.12,1.96-.36.61-.24,1.18-.6,1.71-1.07h.1v1.69Z"/>
-      <path class="cls-3" d="m1667.73,254.88c.44.49.78,1.08,1.02,1.79.24.71.35,1.51.35,2.4s-.12,1.7-.36,2.41c-.24.71-.58,1.3-1.01,1.77-.45.49-.98.86-1.59,1.11-.61.25-1.31.37-2.09.37s-1.46-.13-2.09-.38c-.63-.25-1.16-.62-1.6-1.1-.44-.48-.78-1.07-1.01-1.77-.24-.7-.35-1.5-.35-2.4s.12-1.68.35-2.39c.23-.7.58-1.31,1.02-1.81.43-.48.96-.84,1.6-1.1.64-.25,1.33-.38,2.08-.38s1.48.13,2.1.38c.62.26,1.15.62,1.58,1.09Zm-.13,4.19c0-1.41-.32-2.5-.95-3.27s-1.5-1.15-2.59-1.15-1.97.38-2.6,1.15-.95,1.86-.95,3.27.32,2.52.96,3.28,1.5,1.14,2.59,1.14,1.94-.38,2.58-1.14.96-1.85.96-3.28Z"/>
-      <path class="cls-3" d="m1679.7,264.51h-1.79l-5.16-9.73v9.73h-1.35v-10.88h2.24l4.71,8.88v-8.88h1.35v10.88Z"/>
-      <path class="cls-3" d="m1689.54,254.92h-5.5v3.07h4.73v1.29h-4.73v5.24h-1.45v-10.88h6.95v1.29Z"/>
-      <path class="cls-3" d="m1695.03,264.51h-4.3v-1.11h1.42v-8.66h-1.42v-1.11h4.3v1.11h-1.42v8.66h1.42v1.11Z"/>
-      <path class="cls-3" d="m1706.49,264.51h-1.88l-3.64-4.33h-2.04v4.33h-1.45v-10.88h3.05c.66,0,1.21.04,1.64.13.44.08.83.24,1.18.46.39.25.7.56.92.94.22.38.33.86.33,1.44,0,.78-.2,1.44-.59,1.97-.39.53-.94.93-1.63,1.19l4.09,4.76Zm-3.38-7.82c0-.31-.05-.59-.16-.83s-.29-.44-.54-.61c-.21-.14-.46-.24-.75-.3-.29-.06-.63-.08-1.02-.08h-1.7v4.11h1.46c.46,0,.86-.04,1.2-.12.34-.08.63-.23.87-.45.22-.2.38-.44.49-.7.11-.27.16-.6.16-1.01Z"/>
-      <path class="cls-3" d="m1717.58,264.51h-1.45v-9.37l-3.02,6.38h-.86l-3-6.38v9.37h-1.35v-10.88h1.97l2.9,6.06,2.81-6.06h2.01v10.88Z"/>
-      <path class="cls-3" d="m1729.08,264.51h-1.54l-1.07-3.03h-4.71l-1.07,3.03h-1.47l3.96-10.88h1.93l3.96,10.88Zm-3.05-4.27l-1.91-5.34-1.91,5.34h3.82Z"/>
-      <path class="cls-3" d="m1739.73,264.51h-1.88l-3.64-4.33h-2.04v4.33h-1.45v-10.88h3.05c.66,0,1.21.04,1.64.13.44.08.83.24,1.18.46.39.25.7.56.92.94.22.38.33.86.33,1.44,0,.78-.2,1.44-.59,1.97-.39.53-.94.93-1.63,1.19l4.09,4.76Zm-3.38-7.82c0-.31-.05-.59-.16-.83s-.29-.44-.54-.61c-.21-.14-.46-.24-.75-.3-.29-.06-.63-.08-1.02-.08h-1.7v4.11h1.46c.46,0,.86-.04,1.2-.12.34-.08.63-.23.87-.45.22-.2.38-.44.49-.7.11-.27.16-.6.16-1.01Z"/>
-      <path class="cls-3" d="m1571.12,248.19c-.38,0-.74-.21-.91-.58-.23-.5-.02-1.1.48-1.33l257.14-119.82c.3-.14.65-.12.94.05.28.17.47.47.48.8l6.19,113.24c.03.55-.39,1.02-.94,1.05-.54.02-1.02-.39-1.05-.94l-6.11-111.76-255.8,119.19c-.14.06-.28.09-.42.09Z"/>
-      <path class="cls-3" d="m1828.51,128.02h-52.33c-.55,0-1-.45-1-1s.45-1,1-1h52.33c.55,0,1,.45,1,1s-.45,1-1,1Z"/>
-    </svg></div>
-
   <div class="settings-overlay" id="settingsOverlay">
     <div class="settings-panel glass-panel">
       <header class="settings-header">
@@ -303,28 +223,6 @@ body, html { width:100%; height:100%; background-color:#000; color:#fff; font-fa
           <h3>Sinal Band</h3>
           <div class="field"><label>Link primário (Direto — jmvstream)</label><input type="text" id="bandPrimary" spellcheck="false"></div>
           <p class="settings-hint">Ao salvar, este campo regrava o link "DIRETO" do canal Band.</p>
-        </section>
-        <section class="settings-section">
-          <h3>Modo TV (controle remoto)</h3>
-          <div class="field"><label>Detecção de TV (setas ▲▼ trocam canal, Enter abre a lista e o overlay de instruções)</label>
-            <select id="tvMode">
-              <option value="auto">Automático (padrão)</option>
-              <option value="on">Sempre ativo</option>
-              <option value="off">Desativado</option>
-            </select>
-          </div>
-          <p class="settings-hint">Se o app abrir na TV reconhecendo como tablet/celular, escolha "Sempre ativo". Se o aparelho for detectado como TV e você preferir o uso por toque, escolha "Desativado".</p>
-        </section>
-        <section class="settings-section">
-          <h3>Origem do app</h3>
-          <div class="field"><label>De onde o aplicativo carrega esta página</label>
-            <select id="appOrigin">
-              <option value="mirror">Mirror · GitHub Pages</option>
-              <option value="netlify">Netlify</option>
-            </select>
-          </div>
-          <div class="backup-tools"><button id="appOriginApply">Aplicar e recarregar</button></div>
-          <p class="settings-hint">No aplicativo Android isso troca a URL carregada pelo WebView. As configurações são salvas por origem: ao trocar, o app abre limpo na nova origem.</p>
         </section>
         <section class="settings-section">
           <h3>Failover</h3>
@@ -385,12 +283,9 @@ const FAIL_SUSTAIN = 2000;
 const MAX_FAIL_WAIT = 9000;
 const TRY_LIMIT = 6;
 const SLOW_KBPS = 1200;
-const GLOBO_START_TIMEOUT = 45000;
-const GLOBO_NO_DATA_MS = 30000;
-const GLOBO_FREEZE_MS = 20000;
 
 const DIAL = [
-  { id:'tvcultura', name:'TV Cultura', num:'2.1', logo:'logos/cultura.png', epg:'523305',
+  { id:'tvcultura', name:'TV Cultura Rio', num:'2.1', logo:'logos/cultura.png', epg:'523305',
     links:[
       { q:'UOL', url:'https://player-tvcultura.stream.uol.com.br/live/tvcultura.m3u8' },
       { q:'4K', url:FROST + 'MTAzNTEzLm0zdTg.m3u8' },
@@ -398,17 +293,15 @@ const DIAL = [
       { q:'HD', url:FROST + 'NzE4NTMubTN1OA.m3u8' },
       { q:'SD', url:FROST + 'NzE4NTQubTN1OA.m3u8' }
     ] },
-  { id:'globo', name:'Globo', num:'4.1', logo:'logos/globo.png', epg:'523353',
+  { id:'globo', name:'Globo RJ', num:'4.1', logo:'logos/globo.png', epg:'523353',
     links:[
       { q:'OFICIAL', globo:true },
       { q:'FHD', url:FROST + 'NzIwMjUubTN1OA.m3u8' },
       { q:'HD', url:FROST + 'MTMxMTYzLm0zdTg.m3u8' },
-      { q:'SD', url:FROST + 'MTMxMTgyLm0zdTg.m3u8' },
-      { q:'RD', rd:'https://localhost.tattoo/globo/player.php?id=6120663&lat=-22.9068467&long=-43.1728965' }
+      { q:'SD', url:FROST + 'MTMxMTgyLm0zdTg.m3u8' }
     ] },
-  { id:'redetv', name:'RedeTV', num:'6.1', logo:'logos/redetv.png', epg:'523301',
+  { id:'redetv', name:'RedeTV Rio', num:'6.1', logo:'logos/redetv.png', epg:'523301',
     links:[
-      { q:'DM', dm:'kYe5OYErhldJ75Azib2', ge:true },
       { q:'WEB', url:'https://cdn.live.br1.jmvstream.com/webtv/AVJ-15235/playlist/playlist.m3u8' },
       { q:'4K', url:FROST + 'MTc4NTMyLm0zdTg.m3u8' },
       { q:'FHD', url:FROST + 'NzIyOTcubTN1OA.m3u8' },
@@ -423,15 +316,15 @@ const DIAL = [
       { q:'SD', url:FROST + 'NzkzMTIubTN1OA.m3u8' },
       { q:'SAT', url:'https://media.cdntvms.com.br/band_sat/index.m3u8' }
     ] },
-  { id:'cnt-rio', name:'CNT', num:'9.1', logo:'logos/cnt.png', epg:'',
+  { id:'cnt-rio', name:'Rede CNT Rio de Janeiro', num:'9.1', logo:'logos/cnt.png', epg:'',
     links:[
-      { q:'DM', dm:'x9zentk', ge:true },
+      { q:'DM', dm:'x9zentk' },
       { q:'L1', url:'http://45.162.64.114/CNT/index.m3u8' },
       { q:'L2', url:'http://168.197.104.22/CNT/index.m3u8' },
       { q:'L3', url:'http://170.83.49.66:8083/REDECNTHD/index.m3u8' },
       { q:'L4', url:'http://186.219.52.187/cnt/index.m3u8' }
     ] },
-  { id:'sbt', name:'SBT', num:'11.1', logo:'logos/sbt.png', epg:'523298',
+  { id:'sbt', name:'SBT Rio', num:'11.1', logo:'logos/sbt.png', epg:'523298',
     links:[
       { q:'CDN', url:'https://d1jvs4svzaqp8n.cloudfront.net/indexMobile.m3u8' },
       { q:'YT', yt:'ABVQXgr2LW4' },
@@ -440,12 +333,9 @@ const DIAL = [
       { q:'HD', url:FROST + 'MTA4NjgyLm0zdTg.m3u8' },
       { q:'SD', url:FROST + 'MTA4NjgzLm0zdTg.m3u8' }
     ] },
-  { id:'record', name:'Record', num:'13.1', logo:'logos/record.png', epg:'523282',
+  { id:'record', name:'Record Rio', num:'13.1', logo:'logos/record.png', epg:'523282',
     links:[
-      { q:'SAT', url:'https://media.cdntvms.com.br/record_nacional_sat/index.m3u8' },
-      { q:'FHD', url:FROST + 'MTA2NjM4Lm0zdTg.m3u8' },
-      { q:'HD', url:FROST + 'NzI1OTQubTN1OA.m3u8' },
-      { q:'SD', url:FROST + 'OTY1MjYubTN1OA.m3u8' }
+      { q:'DIRETO', url:'https://cdn.jmvstream.com/w/LVW-10842/LVW10842_513N26MDBL/playlist.m3u8' }
     ] }
 ];
 
@@ -468,7 +358,6 @@ function defaults() {
     sbt: Object.assign({}, SBT_DEF),
     band: Object.assign({}, BAND_DEF),
     failSustain: 2000,
-    tvMode: 'auto',
     last: 0
   };
 }
@@ -479,10 +368,8 @@ function normLink(l) {
   if (l.globo) r.globo = true;
   if (l.yt) r.yt = String(l.yt);
   if (l.dm) r.dm = String(l.dm);
-  if (l.dm && l.ge) r.ge = true;
-  if (l.rd) r.rd = String(l.rd);
   if (l.url) r.url = String(l.url);
-  return (r.globo || r.yt || r.dm || r.url) ? { q: r.q || '', globo: r.globo, yt: r.yt, dm: r.dm, ge: r.ge, rd: r.rd, url: r.url } : null;
+  return (r.globo || r.yt || r.dm || r.url) ? { q: r.q || '', globo: r.globo, yt: r.yt, dm: r.dm, url: r.url } : null;
 }
 function loadSettings() {
   try {
@@ -494,31 +381,13 @@ function loadSettings() {
     const b = Object.assign({}, d.band, s.band || {});
     const byId = {};
     (s.channels || []).forEach((c) => { if (c && c.id) byId[c.id] = { noFail: !!c.noFail, links: (c.links || []).map(normLink).filter(Boolean) }; });
-    const keyL = (l) => (l.globo ? 'globo' : l.yt ? 'yt:' + l.yt : l.dm ? 'dm:' + l.dm : l.url || '');
-    const flgL = (l) => (l.ge ? 'g' : '') + (l.rd ? 'r' : '');
-    const channels = d.channels.map((c) => {
-      const s0 = byId[c.id];
-      if (!s0) return c;
-      const dMap = {};
-      d.links.forEach((l) => { dMap[keyL(l)] = l; });
-      const saved = {};
-      s0.links.forEach((l) => { saved[keyL(l)] = l; });
-      const upgrades = (l) => {
-        const dfl = dMap[keyL(l)];
-        if (!dfl) return l;
-        if (flgL(dfl) === flgL(l)) return l;
-        return Object.assign({}, dfl, { q: l.q || dfl.q });
-      };
-      const sameSet = s0.links.every((l) => dMap[keyL(l)]);
-      let links;
-      if (sameSet) {
-        links = d.links.map((dfl) => Object.assign({}, dfl, { q: (saved[keyL(dfl)] || {}).q || dfl.q }));
-      } else {
-        links = s0.links.map(upgrades).concat(d.links.filter((l) => !saved[keyL(l)]));
-      }
-      return { id: c.id, noFail: s0.noFail, links };
-    });
-    return { channels, globo: g, sbt: sb, band: b, failSustain: (typeof s.failSustain === 'number' && s.failSustain > 0) ? s.failSustain : 2000, tvMode: (s.tvMode === 'on' || s.tvMode === 'off') ? s.tvMode : 'auto', last: (typeof s.last === 'number') ? s.last : 0 };
+    const channels = d.channels.map((c) => byId[c.id] ? { id: c.id, noFail: byId[c.id].noFail, links: byId[c.id].links } : c);
+    const rec = channels.find((c) => c.id === 'record');
+    if (rec && rec.links.length && !rec.links.some((l) => /LVW-10842/.test(l.url || ''))) {
+      const def = DIAL.find((x) => x.id === 'record');
+      if (def) rec.links = def.links.map((l) => Object.assign({}, l));
+    }
+    return { channels, globo: g, sbt: sb, band: b, failSustain: (typeof s.failSustain === 'number' && s.failSustain > 0) ? s.failSustain : 2000, last: (typeof s.last === 'number') ? s.last : 0 };
   } catch (e) { return defaults(); }
 }
 function persistSettings() {
@@ -550,8 +419,7 @@ const els = {
   currentLogo: $('currentLogo'), currentChannelName: $('currentChannelName'), currentProgram: $('currentProgram'),
   healthPct: $('healthPct'), healthQ: $('healthQ'), healthFill: $('healthFill'),
   healthState: $('healthState'), healthLink: $('healthLink'), clock: $('clock'),
-  settingsOverlay: $('settingsOverlay'), linkEditors: $('linkEditors'), diag: $('diag'),
-  tvHint: $('tvHint')
+  settingsOverlay: $('settingsOverlay'), linkEditors: $('linkEditors'), diag: $('diag')
 };
 
 const HLS_CFG = {
@@ -626,21 +494,9 @@ function hideYt() {
     els.ytOverlay.style.display = 'none';
     els.ytFrame.removeAttribute('src');
     delete els.ytFrame.dataset.v;
-    delete els.ytFrame.dataset.r;
-    delete els.ytFrame.dataset.d;
   }
 }
 function ytSrc(v) { return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(v) + '?autoplay=1&rel=0&enablejsapi=1'; }
-function dmSrc(id) { return 'https://geo.dailymotion.com/player/xgrus.html?video=' + encodeURIComponent(id) + '&autoplay=1&mute=1'; }
-function showRd(url) {
-  if (els.ytFrame.dataset.r !== url) { els.ytFrame.dataset.r = url; els.ytFrame.src = bust(url); }
-  if (els.ytOverlay.style.display !== 'block') els.ytOverlay.style.display = 'block';
-}
-function showDm(url) {
-  if (els.ytFrame.dataset.d !== url) { els.ytFrame.dataset.d = url; els.ytFrame.src = url; }
-  if (els.ytOverlay.style.display !== 'block') els.ytOverlay.style.display = 'block';
-  showPoster(false);
-}
 function setLiveDelay(v) {
   try {
     if (!v || !v.buffered || !v.buffered.length || v.currentTime === 0) return;
@@ -699,10 +555,8 @@ async function resolveGlobo() {
       throw new Error('Sem source primary na API Globo: ' + lastErr);
     }
     if (g.useProxy) src.url = proxyUrl(src.url);
-    let alts = (j.sources || []).filter((s) => s.type !== 'primary' && s.url).map((s) => s.url);
-    if (g.useProxy) alts = alts.map((u) => proxyUrl(u));
     const info = jwtInfo(src.url);
-    return { src: src.url, exp: info ? info.exp : 0, globoAlts: alts };
+    return { src: src.url, exp: info ? info.exp : 0 };
   }
   throw new Error('Sem source primary na API Globo: ' + lastErr);
 }
@@ -719,10 +573,8 @@ async function resolveDM(vid) {
 
 function resolveLink(l) {
   if (l.yt) return Promise.resolve({ kind: 'yt', src: 'yt:' + l.yt });
-  if (l.rd) return Promise.resolve({ kind: 'rd', src: l.rd });
-  if (l.dm && l.ge) return Promise.resolve({ kind: 'dme', src: dmSrc(l.dm) });
   if (l.dm) return resolveDM(l.dm).then((u) => ({ kind: 'hls', src: u }));
-  if (l.globo) return resolveGlobo().then((o) => ({ kind: 'hls', src: o.src, globoExp: o.exp, globoAlts: o.globoAlts }));
+  if (l.globo) return resolveGlobo().then((o) => ({ kind: 'hls', src: o.src, globoExp: o.exp }));
   if (!l.url) return Promise.reject(new Error('link sem URL'));
   let u = l.url;
   if (/^http:/.test(u)) u = proxyUrl(u);
@@ -733,13 +585,49 @@ function resolveLink(l) {
 function teardownSlot(slot) {
   if (slot.hls) { try { slot.hls.destroy(); } catch (e) {} slot.hls = null; }
   try { slot.el.pause(); slot.el.removeAttribute('src'); slot.el.load(); } catch (e) {}
-  slot.kind = 'none'; slot.src = ''; slot.q = ''; slot.globo = false; slot.ready = false; slot.fatal = false; slot.link = null; slot.native = false; slot.globoAlts = [];
+  slot.kind = 'none'; slot.src = ''; slot.q = ''; slot.globo = false; slot.ready = false; slot.fatal = false; slot.link = null; slot.native = false;
 }
 
-function makeHls(slot, src) {
-  slot.src = src;
-  slot.ready = false;
+function loadSlot(slot, link, obj) {
+  teardownSlot(slot);
+  slot.kind = obj.kind;
+  slot.src = obj.src;
+  slot.q = link.q || '';
+  slot.globo = !!link.globo;
+  slot.link = link;
+  slot.ready = slot.kind === 'yt';
   slot.fatal = false;
+  if (slot.kind === 'yt') {
+    if (slot === cur()) {
+      showYt(String(slot.src).slice(3));
+      state.lastLoad = Date.now();
+    }
+    return;
+  }
+  if (slot === cur()) {
+    state.lastData = 0;
+    state.lastPaint = 0;
+    state.lastLoad = Date.now();
+  }
+  if (slot.globo && supportsNativeHls(slot.el)) {
+    slot.native = true;
+    slot.el.addEventListener('canplay', () => {
+      slot.ready = true;
+      if (slot === cur()) {
+        showPoster(false);
+        playEl(slot.el);
+        setTimeout(() => setLiveDelay(slot.el), 1500);
+      }
+    }, { once: true });
+    slot.el.addEventListener('error', () => {
+      if (slot !== cur()) return;
+      slot.fatal = true;
+      state.lastData = 0;
+    }, { once: true });
+    slot.el.src = slot.src;
+    if (slot === cur()) { showPoster(false); playEl(slot.el); }
+    return;
+  }
   try {
     const h = new Hls(HLS_CFG);
     slot.hls = h;
@@ -762,91 +650,10 @@ function makeHls(slot, src) {
       state.errs.push(Date.now());
       if (state.errs.length > 20) state.errs = state.errs.slice(-20);
       if (data && data.fatal) { slot.fatal = true; state.lastData = 0; }
-      const fatalManifest = data && data.fatal &&
-        (data.details === 'manifestLoadError' || data.details === 'networkError' || data.details === 'internalException');
-      if (fatalManifest && slot.globo) {
-        const next = slot.globoAlts && slot.globoAlts.length ? slot.globoAlts.shift() : null;
-        if (next) {
-          log('Globo: edge bloqueou CORS — tentando outro distribuidor…', 'warn');
-          try { slot.hls.destroy(); } catch (e3) {}
-          slot.hls = null;
-          slot.globoAlts = slot.globoAlts || [];
-          makeHls(slot, next);
-          return;
-        }
-        log('Globo: manifest bloqueado (CORS/404) — avançando para o backup…', 'warn');
-        if (!state.working) {
-          try { markTried(slot.link); } catch (e2) {}
-          setTimeout(() => {
-            if (state.ch && cur().src === slot.src && !state.working && cur().globo) failoverNow();
-          }, 2500);
-        }
-      }
     });
     h.loadSource(slot.src);
     h.attachMedia(slot.el);
     playEl(slot.el);
-  } catch (e) { slot.fatal = true; }
-}
-
-function loadSlot(slot, link, obj) {
-  teardownSlot(slot);
-  slot.kind = obj.kind;
-  slot.src = obj.src;
-  slot.q = link.q || '';
-  slot.globo = !!link.globo;
-  slot.globoAlts = (obj.globoAlts || []).slice();
-  slot.link = link;
-  slot.ready = slot.kind === 'yt';
-  slot.fatal = false;
-  if (slot.kind === 'yt') {
-    if (slot === cur()) {
-      showYt(String(slot.src).slice(3));
-      state.lastLoad = Date.now();
-    }
-    return;
-  }
-  if (slot.kind === 'rd') {
-    slot.ready = true;
-    if (slot === cur()) {
-      showRd(slot.src);
-      state.lastLoad = Date.now();
-    }
-    return;
-  }
-  if (slot.kind === 'dme') {
-    slot.ready = true;
-    if (slot === cur()) {
-      showDm(slot.src);
-      state.lastLoad = Date.now();
-    }
-    return;
-  }
-  if (slot === cur()) {
-    state.lastData = 0;
-    state.lastPaint = 0;
-    state.lastLoad = Date.now();
-  }
-  if (slot.globo && supportsNativeHls(slot.el)) {
-    slot.native = true;
-    slot.el.addEventListener('canplay', () => {
-      slot.ready = true;
-      if (slot === cur()) {
-        showPoster(false);
-        playEl(slot.el);
-      }
-    }, { once: true });
-    slot.el.addEventListener('error', () => {
-      if (slot !== cur()) return;
-      slot.fatal = true;
-      state.lastData = 0;
-    }, { once: true });
-    slot.el.src = slot.src;
-    if (slot === cur()) { showPoster(false); playEl(slot.el); }
-    return;
-  }
-  try {
-    makeHls(slot, slot.src);
   } catch (e) { slot.fatal = true; }
 }
 
@@ -897,8 +704,6 @@ function swapActivate() {
 function syncYt() {
   const c = cur();
   if (c.kind === 'yt') showYt(String(c.src).slice(3));
-  else if (c.kind === 'rd') showRd(c.src);
-  else if (c.kind === 'dme') showDm(c.src);
   else hideYt();
 }
 
@@ -930,16 +735,6 @@ function promote(reason) {
     playEl(cur().el);
     toast(reason || 'Resgate no YouTube');
     log('promoção → YouTube', 'swap');
-    return true;
-  }
-  if (r.kind === 'dme') {
-    const old = cur();
-    if (old.kind === 'dme' && old.src === r.src) return false;
-    teardownSlot(old);
-    if (old.src) state.tried[old.src] = Date.now();
-    swapActivate();
-    toast(reason || 'Resgate no Dailymotion');
-    log('promoção → Dailymotion', 'swap');
     return true;
   }
   if (!(r.ready || r.el.readyState >= 2)) return false;
@@ -1002,7 +797,7 @@ function warmBest() {
   if (rr.kind !== 'none' && rr.link && linkKey(rr.link) === linkKey(link)) return;
   resolveLink(link).then((o) => {
     if (state.ch !== c) return;
-    if (o.kind === 'yt' || o.kind === 'rd' || o.kind === 'dme') return;
+    if (o.kind === 'yt') return;
     if (cur().src === o.src || (res().kind !== 'none' && res().src === o.src)) return;
     loadSlot(res(), link, o);
     log('reserva aquecida → ' + (link.q || 'link'), 'info');
@@ -1050,19 +845,9 @@ async function renovarGlobo() {
 
 function detectScore() {
   const c = cur();
-  if (c.kind === 'yt' || c.kind === 'rd' || c.kind === 'dme') return 100;
+  if (c.kind === 'yt') return 100;
   if (c.kind !== 'hls') return 100;
   if (!c.hls && !c.native) return 0;
-  if (c.globo) {
-    const now = Date.now();
-    if (c.fatal) return 0;
-    if (state.lastData === 0 && now - state.lastLoad > GLOBO_NO_DATA_MS) return 0;
-    let score = 100;
-    const since = now - state.lastData;
-    if (state.lastData > 0 && since > 10000) score -= Math.min(60, ((since - 10000) / 1000) * 5);
-    if (state.lastPaint > 0 && now - state.lastPaint > GLOBO_FREEZE_MS) score -= 55;
-    return Math.max(0, Math.min(100, Math.round(score)));
-  }
   const now = Date.now();
   if (c.fatal || state.lastData === 0 && now - state.lastLoad > 8000) return 0;
   let score = 100;
@@ -1144,16 +929,10 @@ function forceReserveActive() {
 function tickHealth() {
   if (!state.ch) return;
   const c = cur();
-  if (c.kind === 'dme') {
-    renderHealth(100, c.q);
+  if (c.kind === 'yt') {
+    renderHealth(90, c.q);
     if (state.ch.noFail) return;
-    if (state.working && Date.now() - state.failStart > MAX_FAIL_WAIT) forceReserveActive();
-    return;
-  }
-  if (c.kind === 'yt' || c.kind === 'rd') {
-    renderHealth(c.kind === 'yt' ? 90 : 100, c.q);
-    if (state.ch.noFail) return;
-    if (c.kind === 'yt' && !state.working && !state.ytPlayingAt && Date.now() - state.lastLoad > 15000) {
+    if (!state.working && !state.ytPlayingAt && Date.now() - state.lastLoad > 15000) {
       toast('YouTube sem sinal — trocando link…');
       markTried(c.link);
       failoverNow();
@@ -1164,17 +943,6 @@ function tickHealth() {
   const now = Date.now();
   const score = detectScore();
   renderHealth(score, c.q);
-  if (c.globo) {
-    if (state.ch.noFail) return;
-    if (state.working) {
-      if (now - state.failStart > MAX_FAIL_WAIT) forceReserveActive();
-      return;
-    }
-    if (score <= 0) { failoverNow(); return; }
-    if (state.lastPaint > 0 && now - state.lastPaint > GLOBO_FREEZE_MS) { toast('Sinal travado — trocando link…'); failoverNow(); return; }
-    if (state.lastData === 0 && now - state.lastLoad > GLOBO_NO_DATA_MS) { toast('Sinal não carregou…'); failoverNow(); return; }
-    return;
-  }
   if (state.ch.noFail) {
     state.lowSince = 0;
     state.stallStart = 0;
@@ -1352,7 +1120,7 @@ async function loadPreferred(l) {
     state._loadT = setTimeout(() => {
       if (gen0 !== state.loadGen || state.working) return;
       if (detectScore() <= 0) { toast('Sinal não carregou…'); failoverNow(); }
-    }, l.globo ? GLOBO_START_TIMEOUT : START_TIMEOUT);
+    }, START_TIMEOUT);
   }
   scheduleWarm();
 }
@@ -1417,54 +1185,16 @@ function resetFadeTimer() {
   document.querySelectorAll('.handles-layer').forEach((el) => el.classList.remove('fade-out'));
 }
 function showHandlesTemporarily() { resetFadeTimer(); startFadeTimer(); }
-function notifyNative(o) {
-  try { if (window.Android && Android.setOrientation) Android.setOrientation(o); } catch (e) {}
-}
-function lockOrientation() {
-  try {
-    const so = screen.orientation;
-    if (so && so.lock) so.lock('landscape').catch(() => {});
-  } catch (e) {}
-  notifyNative('landscape');
-}
-function unlockOrientation() {
-  try {
-    const so = screen.orientation;
-    if (so && so.unlock) so.unlock();
-  } catch (e) {}
-  notifyNative('portrait');
-}
-function requestFs() {
-  try {
-    const p = els.app.requestFullscreen ? els.app.requestFullscreen() : null;
-    if (p && typeof p.then === 'function') p.then(() => lockOrientation()).catch(() => {});
-  } catch (e) {}
-}
-document.addEventListener('fullscreenchange', () => {
-  if (document.fullscreenElement) lockOrientation();
-  else unlockOrientation();
-});
-function syncRotateBtn() {
-  try { els.rotateBtn.style.display = (window.innerWidth > window.innerHeight) ? 'none' : ''; } catch (e) {}
-}
-function enterLandscape() {
-  isFullscreen = true;
-  els.app.classList.add('fullscreen-mode');
-  openPanels();
-  requestFs();
-}
 function toggleFullscreen() {
   isFullscreen = !isFullscreen;
   els.app.classList.toggle('fullscreen-mode', isFullscreen);
   if (isFullscreen) {
     openPanels();
-    requestFs();
+    try { if (els.app.requestFullscreen) els.app.requestFullscreen().catch(() => {}); } catch (e) {}
   } else {
     closePanels();
     try { if (document.exitFullscreen) document.exitFullscreen().catch(() => {}); } catch (e) {}
-    unlockOrientation();
   }
-  syncRotateBtn();
 }
 
 els.rotateBtn.onclick = (e) => { e.stopPropagation(); toggleFullscreen(); };
@@ -1479,12 +1209,6 @@ els.playerCanvas.addEventListener('click', (e) => {
     else showHandlesTemporarily();
   }
 });
-
-window.addEventListener('resize', () => {
-  syncRotateBtn();
-  if (window.innerWidth > window.innerHeight && !isFullscreen) enterLandscape();
-});
-syncRotateBtn();
 
 function tickClock() {
   const n = new Date();
@@ -1598,7 +1322,7 @@ function buildSettings() {
   editModel = settings.channels.map((c) => ({
     id: c.id,
     noFail: !!c.noFail,
-    links: c.links.map((l) => ({ q: l.q || '', type: typeOfLink(l), val: l.yt || l.dm || l.url || '', ge: !!l.ge }))
+    links: c.links.map((l) => ({ q: l.q || '', type: typeOfLink(l), val: l.yt || l.dm || l.url || '' }))
   }));
   $('globoEnabled').checked = !!settings.globo.enabled;
   $('globoToken').value = settings.globo.token || '';
@@ -1608,8 +1332,6 @@ function buildSettings() {
   $('globoLead').value = settings.globo.lead || 5;
   $('globoProxy').checked = !!settings.globo.useProxy;
   $('failSustainSec').value = Math.round((settings.failSustain || 2000) / 1000);
-  $('tvMode').value = settings.tvMode || 'auto';
-  $('appOrigin').value = (location.hostname || '').endsWith('.netlify.app') ? 'netlify' : 'mirror';
   $('sbtYt').value = settings.sbt.yt || '';
   $('sbtCdn').value = settings.sbt.cdn || '';
   $('sbtSat').value = settings.sbt.sat || '';
@@ -1641,17 +1363,13 @@ function saveSettings() {
   settings.band.primary = val('bandPrimary');
   const fs = Math.round(+val('failSustainSec') || 0);
   settings.failSustain = Math.max(0, fs) * 1000;
-  const prevTv = settings.tvMode;
-  settings.tvMode = ['on', 'off'].includes($('tvMode').value) ? $('tvMode').value : 'auto';
-  applyTvMode();
-  if (settings.tvMode === 'on' && prevTv !== 'on') showTvHint();
   settings.channels = editModel.map((cm) => ({
     id: cm.id,
     noFail: !!cm.noFail,
     links: cm.links.map((r) => {
       if (r.type === 'hls') return { q: r.q, url: r.val };
       if (r.type === 'yt') return { q: r.q, yt: r.val };
-      if (r.type === 'dm') return { q: r.q, dm: r.val, ge: r.ge ? true : undefined };
+      if (r.type === 'dm') return { q: r.q, dm: r.val };
       return { q: r.q, globo: true };
     }).filter((l) => l.url || (l.yt && l.yt) || (l.dm && l.dm) || l.globo)
   }));
@@ -1714,89 +1432,7 @@ $('btnExport').onclick = exportBackup;
 $('btnImport').onclick = importBackup;
 $('btnRestore').onclick = restoreDefaults;
 
-const APP_ORIGINS = {
-  mirror: 'https://wagnecorreia.github.io/tv30-web/',
-  netlify: 'https://tv30.netlify.app/'
-};
-$('appOriginApply').onclick = () => {
-  const target = APP_ORIGINS[$('appOrigin').value] || APP_ORIGINS.mirror;
-  if (target === location.origin + location.pathname) { log('A origem já é a atual.', 'info'); return; }
-  if (window.Android && typeof Android.setAppUrl === 'function') {
-    try { Android.setAppUrl(target); return; } catch (e) {}
-  }
-  log('Abrindo ' + target, 'info');
-  location.href = target;
-};
-
-const tvQ = new URLSearchParams(location.search).get('tv');
-if (tvQ === '1') { try { localStorage.setItem('tv30_tv', '1'); } catch (e) {} }
-if (tvQ === '0') { try { localStorage.removeItem('tv30_tv'); } catch (e) {} }
-function isTVDevice() {
-  const ua = String(navigator.userAgent).toLowerCase();
-  if (/(tv30app|aft[a-z]*|android tv|smart ?tv|television|tizen|webos|roku|bravia|fire ?tv|tv ?box|mibox|mi box|mxq|x96|h96|beelink)/.test(ua)) return true;
-  try { return localStorage.getItem('tv30_tv') === '1'; } catch (e) { return false; }
-}
-const tv = { epgT: null, hintT: null, focus: 0 };
-const AUTO_TV = isTVDevice();
-let tvMode = settings.tvMode === 'on' ? true : settings.tvMode === 'off' ? false : AUTO_TV;
-function applyTvMode() {
-  tvMode = settings.tvMode === 'on' ? true : settings.tvMode === 'off' ? false : AUTO_TV;
-  els.app.classList.toggle('app-tv', tvMode);
-}
-applyTvMode();
-
-function showTvHint() {
-  clearTimeout(tv.hintT);
-  els.tvHint.classList.remove('fading');
-  els.tvHint.classList.add('show');
-  tv.hintT = setTimeout(() => els.tvHint.classList.add('fading'), 3200);
-  setTimeout(() => { els.tvHint.classList.remove('show'); els.tvHint.classList.remove('fading'); }, 4600);
-}
-function showTvBottom(ms) {
-  if (!els.bottomPanel.classList.contains('open')) els.bottomPanel.classList.add('open');
-  resetFadeTimer();
-  clearTimeout(tv.epgT);
-  tv.epgT = setTimeout(() => { els.bottomPanel.classList.remove('open'); }, ms || 8000);
-}
-function tvFocusItem(i, scroll) {
-  const n = chans.length || 1;
-  tv.focus = ((i % n) + n) % n;
-  const items = els.sideChannelList.querySelectorAll('.side-channel-item');
-  items.forEach((el, k) => el.classList.toggle('focus', k === tv.focus));
-  const fe = items[tv.focus];
-  if (fe && scroll) fe.scrollIntoView({ block: 'nearest' });
-}
-
 document.addEventListener('keydown', (e) => {
-  if (tvMode) {
-    if (els.settingsOverlay.classList.contains('open')) { if (e.key === 'Escape') closeSettings(); return; }
-    if (e.target && /input|select|textarea/i.test(e.target.tagName)) return;
-    const listOpen = els.sidePanel.classList.contains('open');
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (listOpen) tvFocusItem(tv.focus - 1, true);
-      else { nextChannel(); showTvBottom(7000); }
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (listOpen) tvFocusItem(tv.focus + 1, true);
-      else { prevChannel(); showTvBottom(7000); }
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-      e.preventDefault();
-      showTvBottom(8000);
-    } else if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      if (listOpen) {
-        if (tv.focus !== state.idx) selectChannel(tv.focus);
-        closePanels();
-      } else {
-        els.sidePanel.classList.add('open');
-        resetFadeTimer();
-        tvFocusItem(state.idx, false);
-        showTvHint();
-      }
-    }
-    return;
-  }
   if (els.settingsOverlay.classList.contains('open')) {
     if (e.key === 'Escape') closeSettings();
     return;
@@ -1822,8 +1458,10 @@ setInterval(tickHealth, 1000);
 setInterval(refreshEpg, 60000);
 tickClock();
 
-if (window.innerWidth > window.innerHeight) {
-  enterLandscape();
+if (!('ontouchstart' in window) && (window.innerWidth > window.innerHeight)) {
+  els.app.classList.add('fullscreen-mode');
+  openPanels();
+  try { if (els.app.requestFullscreen) els.app.requestFullscreen().catch(() => {}); } catch (e) {}
 }
 
 selectChannel(settings.last || 0);
